@@ -3,9 +3,9 @@ import logo from "../assets/logo.svg";
 export default function Nav() {
   return (
     <>
-      <img src={logo} alt="logo" />
       <nav>
-        <ul>
+      <img src={logo} alt="logo" />
+        <ul className="nav-links">
           <li>
             <a href="/">Home</a>
           </li>
