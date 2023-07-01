@@ -4,7 +4,7 @@ export default function Nav() {
   return (
     <>
       <nav>
-      <img src={logo} alt="logo" />
+        <img src={logo} alt="logo" />
         <ul className="nav-links">
           <li>
             <a href="/">Home</a>
