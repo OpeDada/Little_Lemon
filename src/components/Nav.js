@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import logo from "../assets/logo.svg";
 
 export default function Nav() {
@@ -7,22 +8,22 @@ export default function Nav() {
         <img src={logo} alt="logo" />
         <ul className="nav-links">
           <li>
-            <a href="/">Home</a>
+            <Link to="/">Home</Link>
           </li>
           <li>
-            <a href="/about">About</a>
+            <Link to="/about">About</Link>
           </li>
           <li>
-            <a href="/menu">Menu</a>
+            <Link to="/menu">Menu</Link>
           </li>
           <li>
-            <a href="/reservations">Reservations</a>
+            <Link to="/reservations">Reservations</Link>
           </li>
           <li>
-            <a href="/order">Order Online</a>
+            <Link to="/order">Order Online</Link>
           </li>
           <li>
-            <a href="/login">Login</a>
+            <Link to="/login">Login</Link>
           </li>
         </ul>
       </nav>
