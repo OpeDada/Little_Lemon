@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
-const BookingForm = () => {
+const BookingForm = ({availableTimes, setAvailableTimes}) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState(0);
   const [occasion, setOccasion] = useState("");
 
-  const availableTimes = ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -37,7 +36,7 @@ const BookingForm = () => {
               onChange={(e) => setTime(e.target.value)}
             >
               <option value="">-- Select --</option>
-              {availableTimes.map((availableTime) => (
+              {availableTimes && availableTimes.map((availableTime) => (
                 <option key={availableTime} value={availableTime}>
                   {availableTime}
                 </option>
