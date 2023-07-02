@@ -2,9 +2,9 @@ import BookingForm from "../components/BookingForm";
 
 const BookingPage = () => {
   return (
-   <>
-   <BookingForm />
-   </>
+    <>
+      <BookingForm />
+    </>
   );
 };
 
