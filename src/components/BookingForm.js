@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 
-const BookingForm = ({availableTimes, setAvailableTimes}) => {
+const BookingForm = ({ availableTimes, onDateChange }) => {
   const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [numberOfGuests, setNumberOfGuests] = useState(0);
   const [occasion, setOccasion] = useState("");
 
+  const handleDateChange = (event) => {
+    const selectedDate = event.target.value;
+    // setDate(selectedDate);
+    onDateChange(selectedDate);
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -25,7 +30,7 @@ const BookingForm = ({availableTimes, setAvailableTimes}) => {
               type="date"
               id="res-date"
               value={date}
-              onChange={(e) => setDate(e.target.value)}
+              onChange={handleDateChange}
             />
           </div>
           <div className="field">
@@ -36,9 +41,9 @@ const BookingForm = ({availableTimes, setAvailableTimes}) => {
               onChange={(e) => setTime(e.target.value)}
             >
               <option value="">-- Select --</option>
-              {availableTimes && availableTimes.map((availableTime) => (
-                <option key={availableTime} value={availableTime}>
-                  {availableTime}
+              {availableTimes.map((time) => (
+                <option key={time} value={time}>
+                  {time}
                 </option>
               ))}
             </select>
