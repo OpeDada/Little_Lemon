@@ -1,20 +1,25 @@
 import React, { useState } from "react";
 
-const BookingForm = ({ availableTimes, onDateChange }) => {
-  const [date, setDate] = useState("");
+const BookingForm = ({ availableTimes, onSubmit }) => {
+  const [date, setDate] = useState(new Date());
   const [time, setTime] = useState("");
-  const [numberOfGuests, setNumberOfGuests] = useState(0);
+  const [guests, setGuests] = useState(0);
   const [occasion, setOccasion] = useState("");
-
-  const handleDateChange = (event) => {
-    const selectedDate = event.target.value;
-    // setDate(selectedDate);
-    onDateChange(selectedDate);
-  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    // Create form data object
+    const formData = {
+      date,
+      time,
+      guests,
+      occasion,
+    };
+    // Pass form data to the onSubmit function
+    onSubmit(formData);
   };
+
+  // console.log("today.getDate(): ", date.getDate());
 
   return (
     <div className="booking-form">
@@ -30,7 +35,7 @@ const BookingForm = ({ availableTimes, onDateChange }) => {
               type="date"
               id="res-date"
               value={date}
-              onChange={handleDateChange}
+              onChange={(event) => setDate(event.target.value)}
             />
           </div>
           <div className="field">
@@ -38,14 +43,21 @@ const BookingForm = ({ availableTimes, onDateChange }) => {
             <select
               id="res-time"
               value={time}
-              onChange={(e) => setTime(e.target.value)}
+              onChange={(event) => setTime(event.target.value)}
             >
-              <option value="">-- Select --</option>
-              {availableTimes && availableTimes.map((time) => (
+              {/* <option value="">-- Select --</option>
+              {availableTimes.map((time) => (
                 <option key={time} value={time}>
                   {time}
                 </option>
-              ))}
+              ))} */}
+              {availableTimes && Array.isArray(availableTimes)
+                ? availableTimes.map((time) => (
+                    <option key={time} value={time}>
+                      {time}
+                    </option>
+                  ))
+                : null}
             </select>
           </div>
           <div className="field">
@@ -56,8 +68,8 @@ const BookingForm = ({ availableTimes, onDateChange }) => {
               min="1"
               max="10"
               id="guests"
-              value={numberOfGuests}
-              onChange={(e) => setNumberOfGuests(e.target.value)}
+              value={guests}
+              onChange={(event) => setGuests(event.target.value)}
             />
           </div>
           <div className="field">
@@ -65,7 +77,7 @@ const BookingForm = ({ availableTimes, onDateChange }) => {
             <select
               id="occasion"
               value={occasion}
-              onChange={(e) => setOccasion(e.target.value)}
+              onChange={(event) => setOccasion(event.target.value)}
             >
               <option value="">-- Select --</option>
               <option value="birthday">Birthday</option>

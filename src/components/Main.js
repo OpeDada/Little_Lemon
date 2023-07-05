@@ -1,38 +1,97 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useEffect } from "react";
 import { Link } from "react-router-dom";
 import bannerPix from "../assets/images/restaurantfood.jpg";
 import BookingForm from "./BookingForm";
 
-const availableTimesReducer = (state, action) => {
-  switch (action.type) {
-    case "SET_AVAILABLE_TIMES":
-      return action.payload;
-    default:
-      return state;
+// return ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
+
+// const fetchAPI = async (date) => {
+//   try {
+//     const response = await fetch(
+//       `https://raw.githubusercontent.com/Meta-Front-End-Developer-PC/capstone/master/api.js/times?date=${date}`
+//     );
+//     if (!response.ok) {
+//       throw new Error("Failed to fetch available times.");
+//     }
+//     const data = await response.json();
+//     return data.times;
+//   } catch (error) {
+//     console.error(error);
+//     return [];
+//   }
+// };
+
+const seededRandom = function (seed) {
+  var m = 2 ** 35 - 31;
+  var a = 185852;
+  var s = seed % m;
+  return function () {
+    return (s = (s * a) % m) / m;
+  };
+};
+
+const fetchAPI = function (date) {
+  let result = [];
+  let random = seededRandom(date.getDate());
+
+  for (let i = 17; i <= 23; i++) {
+    if (random() < 0.5) {
+      result.push(i + ":00");
+    }
+    if (random() < 0.5) {
+      result.push(i + ":30");
+    }
   }
+  return result;
+};
+const submitAPI = function (formData) {
+  return true;
 };
 
-// Function to update availableTimes based on the selected date
-export const updateTimes = (selectedDate) => {
+const Main = () => {
+  const initializeTimes = () => {
+    try {
+      const today = new Date();
+      const availableTimes = fetchAPI(today);
+      return availableTimes;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
 
-  return ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
-};
+  const updateTimes = (date) => {
+    try {
+      const availableTimes = fetchAPI(date);
+      return availableTimes;
+    } catch (error) {
+      console.error(error);
+      return [];
+    }
+  };
 
-export const initializeTimes = () => {
-
-  return ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
-};
-
-export default function Main() {
   const [availableTimes, dispatch] = useReducer(
-    availableTimesReducer,
+    updateTimes,
     [],
     initializeTimes
   );
 
-  const handleDateChange = (selectedDate) => {
-    const updatedTimes = updateTimes(selectedDate);
-    dispatch({ type: "SET_AVAILABLE_TIMES", payload: updatedTimes });
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
+    dispatch(today);
+  }, []);
+
+  const handleSubmit = (formData) => {
+    // Perform actions with the form data, such as making API calls, updating state, etc.
+    console.log("Form submitted:", formData);
+    // Call the API function to submit the form data
+    submitAPI(formData)
+      .then((response) => {
+        console.log("Form submission successful:", response);
+      })
+      .catch((error) => {
+        console.error("Error submitting form:", error);
+      });
   };
 
   return (
@@ -51,10 +110,9 @@ export default function Main() {
         </div>
         <img src={bannerPix} alt="restaurant pix"></img>
       </section>
-      <BookingForm
-        availableTimes={availableTimes}
-        onDateChange={handleDateChange}
-      />
+      <BookingForm availableTimes={availableTimes} onSubmit={handleSubmit} />
     </main>
   );
-}
+};
+
+export default Main;
