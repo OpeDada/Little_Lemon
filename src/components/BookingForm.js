@@ -18,7 +18,6 @@ const BookingForm = ({ availableTimes, onSubmit }) => {
     // Pass form data to the onSubmit function
     onSubmit(formData);
   };
-
   // console.log("today.getDate(): ", date.getDate());
 
   return (

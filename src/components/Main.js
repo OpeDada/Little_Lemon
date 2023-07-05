@@ -1,7 +1,8 @@
 import React, { useReducer, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate, Routes, Route } from "react-router-dom";
 import bannerPix from "../assets/images/restaurantfood.jpg";
 import BookingForm from "./BookingForm";
+import ConfirmedBooking from "./ConfirmedBooking";
 
 // return ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
 
@@ -19,7 +20,9 @@ import BookingForm from "./BookingForm";
 //     console.error(error);
 //     return [];
 //   }
+
 // };
+
 
 const seededRandom = function (seed) {
   var m = 2 ** 35 - 31;
@@ -49,6 +52,8 @@ const submitAPI = function (formData) {
 };
 
 const Main = () => {
+  const navigate = useNavigate();
+
   const initializeTimes = () => {
     try {
       const today = new Date();
@@ -76,23 +81,27 @@ const Main = () => {
     initializeTimes
   );
 
-  useEffect(() => {
-    const today = new Date().toISOString().split("T")[0];
-    dispatch(today);
-  }, []);
+  const submitForm = (formData) => {
 
-  const handleSubmit = (formData) => {
     // Perform actions with the form data, such as making API calls, updating state, etc.
     console.log("Form submitted:", formData);
     // Call the API function to submit the form data
     submitAPI(formData)
       .then((response) => {
-        console.log("Form submission successful:", response);
+        if (response === true) {
+          navigate("/confirmed"); // Navigate to the booking confirmation page
+        } else {
+          console.error("Form submission failed.");
+        }
       })
       .catch((error) => {
         console.error("Error submitting form:", error);
       });
   };
+
+  useEffect(() => {
+    initializeTimes();
+  }, []);
 
   return (
     <main>
@@ -110,7 +119,19 @@ const Main = () => {
         </div>
         <img src={bannerPix} alt="restaurant pix"></img>
       </section>
-      <BookingForm availableTimes={availableTimes} onSubmit={handleSubmit} />
+      <Routes>
+        <Route
+          path="/booking-page"
+          render={() => (
+            <BookingForm
+              availableTimes={availableTimes}
+              onSubmit={submitForm}
+            />
+          )}
+        />
+        <Route path="/confirmed" element={<ConfirmedBooking />} />
+      </Routes>
+      {/* <BookingForm availableTimes={availableTimes} onSubmit={handleSubmit} /> */}
     </main>
   );
 };
