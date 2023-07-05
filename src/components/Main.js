@@ -133,16 +133,15 @@ const Main = () => {
     }
   }
 
-  function handleSubmit(formData) {
-    submitAPI(formData)
-      .then((response) => {
-        if (response) {
-          navigate("/confirmed");
-        }
-      })
-      .catch((error) => {
-        console.error("Error submitting form:", error);
-      });
+  async function handleSubmit(formData) {
+    try {
+      const response = await submitAPI(formData);
+      if (response) {
+        navigate("/confirmed");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   }
 
   return (

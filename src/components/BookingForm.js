@@ -1,100 +1,114 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
+
+const validationSchema = Yup.object().shape({
+  date: Yup.string().required("Date is required"),
+  time: Yup.string().required("Time is required"),
+  guests: Yup.number()
+    .required("Number of guests is required")
+    .min(1, "Number of guests must be at least 1"),
+  occasion: Yup.string().required("Occasion is required"),
+});
 
 const BookingForm = ({ availableTimes, onSubmit }) => {
-  const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
-  const [guests, setGuests] = useState(0);
-  const [occasion, setOccasion] = useState("");
+  // const [date, setDate] = useState("");
+  // const [time, setTime] = useState("");
+  // const [guests, setGuests] = useState(0);
+  // const [occasion, setOccasion] = useState("");
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    // Perform form validation before submitting
-    if (event.target.checkValidity()) {
-      const formData = {
-        date,
-        time,
-        guests,
-        occasion,
-      };
-      onSubmit(formData);
-    } else {
-      event.target.reportValidity();
-    }
-  };
+  const [isFormSubmitted, setIsFormSubmitted] = useState(false);
+
+  function handleSubmit(values) {
+    setIsFormSubmitted(true);
+    onSubmit(values);
+  }
+
+  // const handleSubmit = (event) => {
+  //   event.preventDefault();
+  //   // Perform form validation before submitting
+  //   if (event.target.checkValidity()) {
+  //     const formData = {
+  //       date,
+  //       time,
+  //       guests,
+  //       occasion,
+  //     };
+  //     onSubmit(formData);
+  //   } else {
+  //     event.target.reportValidity();
+  //   }
+  // };
+
   // console.log("today.getDate(): ", date.getDate());
 
   return (
-    <div className="booking-form">
-      <form
+    <div>
+      <h2>Reservation Form</h2>
+      <Formik
+        initialValues={{ date: "", time: "", guests: "", occasion: "" }}
+        validationSchema={validationSchema}
         onSubmit={handleSubmit}
-        style={{ display: "grid", maxWidth: "300px", gap: "20px" }}
       >
-        <fieldset>
-          <legend>Reservation Form</legend>
-          <div className="field">
-            <label htmlFor="res-date">Choose Date </label>
-            <input
-              type="date"
-              id="res-date"
-              required
-              value={date}
-              onChange={(event) => setDate(event.target.value)}
-            />
+        <Form>
+          <div>
+            <label htmlFor="date">Date:</label>
+            <Field type="date" id="date" name="date" required />
+            <ErrorMessage name="date" component="div" className="error" />
           </div>
-          <div className="field">
-            <label htmlFor="res-time">Choose Time </label>
-            <select
-              id="res-time"
-              required
-              value={time}
-              onChange={(event) => setTime(event.target.value)}
-            >
-              <option value="">-- Select --</option>
+
+          <div>
+            <label htmlFor="time">Time:</label>
+            <Field as="select" id="time" name="time" required>
+              <option value="">Select Time</option>
+              {availableTimes &&
+                availableTimes.map((time) => (
+                  <option key={time} value={time}>
+                    {time}
+                  </option>
+                ))}
               {/* {availableTimes.map((time) => (
                 <option key={time} value={time}>
                   {time}
                 </option>
               ))} */}
-              {availableTimes && Array.isArray(availableTimes)
-                ? availableTimes.map((time) => (
-                    <option key={time} value={time}>
-                      {time}
-                    </option>
-                  ))
-                : null}
-            </select>
+              <option>2:00</option>
+            </Field>
+            <ErrorMessage name="time" component="div" className="error" />
           </div>
-          <div className="field">
-            <label htmlFor="guests">Number of guests</label>
-            <input
+
+          <div>
+            <label htmlFor="guests">Number of Guests:</label>
+            <Field
               type="number"
-              placeholder="1"
+              id="guests"
+              name="guests"
               min="1"
               max="10"
               required
-              id="guests"
-              value={guests}
-              onChange={(event) => setGuests(event.target.value)}
             />
+            <ErrorMessage name="guests" component="div" className="error" />
           </div>
-          <div className="field">
-            <label htmlFor="occasion">Occasion</label>
-            <select
-              id="occasion"
-              required
-              value={occasion}
-              onChange={(event) => setOccasion(event.target.value)}
-            >
-              <option value="">-- Select --</option>
-              <option value="birthday">Birthday</option>
-              <option value="anniversary">Anniversary</option>
-              <option value="option3">Engagement</option>
-            </select>
+          <div>
+            <label htmlFor="occasion">Occasion:</label>
+            <Field as="select" id="occasion" name="occasion" required>
+              <option value="">Select Occasion</option>
+              <option value="Birthday">Birthday</option>
+              <option value="Anniversary">Anniversary</option>
+              <option value="Engagement">Engagement</option>
+            </Field>
+            <ErrorMessage name="occasion" component="div" className="error" />
           </div>
-          <input type="submit" value="Make Your reservation" />
-        </fieldset>
-      </form>
+
+          <button
+            type="submit"
+            disabled={isFormSubmitted}
+            aria-label="On Click"
+          >
+            Submit
+          </button>
+        </Form>
+      </Formik>
     </div>
   );
 };
