@@ -6,94 +6,33 @@ import ConfirmedBooking from "./ConfirmedBooking";
 
 // return ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
 
-// const fetchAPI = async (date) => {
-//   try {
-//     const response = await fetch(
-//       `https://raw.githubusercontent.com/Meta-Front-End-Developer-PC/capstone/master/api.js/times?date=${date}`
-//     );
-//     if (!response.ok) {
-//       throw new Error("Failed to fetch available times.");
-//     }
-//     const data = await response.json();
-//     return data.times;
-//   } catch (error) {
-//     console.error(error);
-//     return [];
-//   }
-
-// };
-
-// const seededRandom = function (seed) {
-//   var m = 2 ** 35 - 31;
-//   var a = 185852;
-//   var s = seed % m;
-//   return function () {
-//     return (s = (s * a) % m) / m;
-//   };
-// };
-
-// const fetchAPI = function (date) {
-//   let result = [];
-//   let random = seededRandom(date.getDate());
-
-//   for (let i = 17; i <= 23; i++) {
-//     if (random() < 0.5) {
-//       result.push(i + ":00");
-//     }
-//     if (random() < 0.5) {
-//       result.push(i + ":30");
-//     }
-//   }
-//   return result;
-// };
-// const submitAPI = function (formData) {
-//   return true;
-// };
-
-// export const initializeTimes = () => {
-//   try {
-//     const today = new Date();
-//     const availableTimes = fetchAPI(today);
-//     return availableTimes;
-//   } catch (error) {
-//     console.error(error);
-//     return [];
-//   }
-// };
-
-// export const updateTimes = (date) => {
-//   try {
-//     const availableTimes = fetchAPI(date);
-//     return availableTimes;
-//   } catch (error) {
-//     console.error(error);
-//     return [];
-//   }
-// };
 
 async function fetchAPI(date) {
   // Fetch the available booking times for the given date
-  const response = await fetch(
-    `https://raw.githubusercontent.com/Meta-Front-End-Developer-PC/capstone/master/api.js?date=${date}`
-  );
-  const data = await response.json();
-  return data;
+  try {
+    const response = await fetch(`https://raw.githubusercontent.com/Meta-Front-End-Developer-PC/capstone/master/api.js?date=${date}`);
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error fetching available times:', error);
+  }
 }
 
 async function submitAPI(formData) {
   // Submit the form data to the API
-  const response = await fetch(
-    "https://raw.githubusercontent.com/Meta-Front-End-Developer-PC/capstone/master/api.js",
-    {
-      method: "POST",
+  try {
+    const response = await fetch('https://raw.githubusercontent.com/Meta-Front-End-Developer-PC/capstone/master/api.js', {
+      method: 'POST',
       body: JSON.stringify(formData),
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
-    }
-  );
-  const data = await response.json();
-  return data;
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error('Error submitting form:', error);
+}
 }
 
 const Main = () => {
@@ -136,6 +75,7 @@ const Main = () => {
   async function handleSubmit(formData) {
     try {
       const response = await submitAPI(formData);
+        console.log("response ", response);
       if (response) {
         navigate("/confirmed");
       }
