@@ -3,6 +3,10 @@ body {
   padding: 2rem 6rem;
 }
 
+a {
+  text-decoration: none;
+}
+
 nav {
   display: flex;
   justify-content: space-between;
@@ -18,7 +22,6 @@ nav {
   color: #000;
   font-weight: 600;
   padding: 1.5rem;
-  text-decoration: none;
 }
 
 .hero {
@@ -39,8 +42,4 @@ footer {
 
 footer ul {
   list-style: none;
-}
-
-.footer-links a{
-  text-decoration: none;
 }

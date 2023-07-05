@@ -94,7 +94,7 @@ const Main = () => {
             We are a family owned Mediterranean restaurant, focused on
             traditional recipes served with a modern twist.
           </p>
-          <button>
+          <button className="reserve-button">
             <Link to="/booking-page">Reserve a Table</Link>
           </button>
         </div>
