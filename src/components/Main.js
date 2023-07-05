@@ -13,15 +13,13 @@ const availableTimesReducer = (state, action) => {
 };
 
 // Function to update availableTimes based on the selected date
-const updateTimes = (selectedDate) => {
-  // Replace with your logic to fetch or calculate available times based on the selected date
-  // For now, returning the same available times regardless of the date
+export const updateTimes = (selectedDate) => {
+
   return ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
 };
 
-const initializeTimes = () => {
-  // Replace with your logic to initialize the availableTimes state
-  // For now, returning the same available times as the initial state
+export const initializeTimes = () => {
+
   return ["17:00", "18:00", "19:00", "20:00", "21:00", "22:00"];
 };
 
