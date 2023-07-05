@@ -1,22 +1,26 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const BookingForm = ({ availableTimes, onSubmit }) => {
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState("");
   const [time, setTime] = useState("");
   const [guests, setGuests] = useState(0);
   const [occasion, setOccasion] = useState("");
 
   const handleSubmit = (event) => {
     event.preventDefault();
-    // Create form data object
-    const formData = {
-      date,
-      time,
-      guests,
-      occasion,
-    };
-    // Pass form data to the onSubmit function
-    onSubmit(formData);
+    // Perform form validation before submitting
+    if (event.target.checkValidity()) {
+      const formData = {
+        date,
+        time,
+        guests,
+        occasion,
+      };
+      onSubmit(formData);
+    } else {
+      event.target.reportValidity();
+    }
   };
   // console.log("today.getDate(): ", date.getDate());
 
@@ -33,6 +37,7 @@ const BookingForm = ({ availableTimes, onSubmit }) => {
             <input
               type="date"
               id="res-date"
+              required
               value={date}
               onChange={(event) => setDate(event.target.value)}
             />
@@ -41,11 +46,12 @@ const BookingForm = ({ availableTimes, onSubmit }) => {
             <label htmlFor="res-time">Choose Time </label>
             <select
               id="res-time"
+              required
               value={time}
               onChange={(event) => setTime(event.target.value)}
             >
-              {/* <option value="">-- Select --</option>
-              {availableTimes.map((time) => (
+              <option value="">-- Select --</option>
+              {/* {availableTimes.map((time) => (
                 <option key={time} value={time}>
                   {time}
                 </option>
@@ -66,6 +72,7 @@ const BookingForm = ({ availableTimes, onSubmit }) => {
               placeholder="1"
               min="1"
               max="10"
+              required
               id="guests"
               value={guests}
               onChange={(event) => setGuests(event.target.value)}
@@ -75,6 +82,7 @@ const BookingForm = ({ availableTimes, onSubmit }) => {
             <label htmlFor="occasion">Occasion</label>
             <select
               id="occasion"
+              required
               value={occasion}
               onChange={(event) => setOccasion(event.target.value)}
             >

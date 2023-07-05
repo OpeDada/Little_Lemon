@@ -161,19 +161,19 @@ const Main = () => {
         </div>
         <img src={bannerPix} alt="restaurant pix"></img>
       </section>
-      {/* <Routes>
+      <Routes>
         <Route
           path="/booking-page"
           render={() => (
             <BookingForm
               availableTimes={availableTimes}
-              onSubmit={submitForm}
+              onSubmit={handleSubmit}
             />
           )}
         />
         <Route path="/confirmed" element={<ConfirmedBooking />} />
-      </Routes> */}
-      <BookingForm availableTimes={availableTimes} onSubmit={handleSubmit} />
+      </Routes>
+      {/* <BookingForm availableTimes={availableTimes} onSubmit={handleSubmit} /> */}
     </main>
   );
 };
