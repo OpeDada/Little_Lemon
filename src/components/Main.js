@@ -23,85 +23,127 @@ import ConfirmedBooking from "./ConfirmedBooking";
 
 // };
 
+// const seededRandom = function (seed) {
+//   var m = 2 ** 35 - 31;
+//   var a = 185852;
+//   var s = seed % m;
+//   return function () {
+//     return (s = (s * a) % m) / m;
+//   };
+// };
 
-const seededRandom = function (seed) {
-  var m = 2 ** 35 - 31;
-  var a = 185852;
-  var s = seed % m;
-  return function () {
-    return (s = (s * a) % m) / m;
-  };
-};
+// const fetchAPI = function (date) {
+//   let result = [];
+//   let random = seededRandom(date.getDate());
 
-const fetchAPI = function (date) {
-  let result = [];
-  let random = seededRandom(date.getDate());
+//   for (let i = 17; i <= 23; i++) {
+//     if (random() < 0.5) {
+//       result.push(i + ":00");
+//     }
+//     if (random() < 0.5) {
+//       result.push(i + ":30");
+//     }
+//   }
+//   return result;
+// };
+// const submitAPI = function (formData) {
+//   return true;
+// };
 
-  for (let i = 17; i <= 23; i++) {
-    if (random() < 0.5) {
-      result.push(i + ":00");
+// export const initializeTimes = () => {
+//   try {
+//     const today = new Date();
+//     const availableTimes = fetchAPI(today);
+//     return availableTimes;
+//   } catch (error) {
+//     console.error(error);
+//     return [];
+//   }
+// };
+
+// export const updateTimes = (date) => {
+//   try {
+//     const availableTimes = fetchAPI(date);
+//     return availableTimes;
+//   } catch (error) {
+//     console.error(error);
+//     return [];
+//   }
+// };
+
+async function fetchAPI(date) {
+  // Fetch the available booking times for the given date
+  const response = await fetch(
+    `https://raw.githubusercontent.com/Meta-Front-End-Developer-PC/capstone/master/api.js?date=${date}`
+  );
+  const data = await response.json();
+  return data;
+}
+
+async function submitAPI(formData) {
+  // Submit the form data to the API
+  const response = await fetch(
+    "https://raw.githubusercontent.com/Meta-Front-End-Developer-PC/capstone/master/api.js",
+    {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+      },
     }
-    if (random() < 0.5) {
-      result.push(i + ":30");
-    }
-  }
-  return result;
-};
-const submitAPI = function (formData) {
-  return true;
-};
+  );
+  const data = await response.json();
+  return data;
+}
 
 const Main = () => {
   const navigate = useNavigate();
-
-  const initializeTimes = () => {
-    try {
-      const today = new Date();
-      const availableTimes = fetchAPI(today);
-      return availableTimes;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  };
-
-  const updateTimes = (date) => {
-    try {
-      const availableTimes = fetchAPI(date);
-      return availableTimes;
-    } catch (error) {
-      console.error(error);
-      return [];
-    }
-  };
 
   const [availableTimes, dispatch] = useReducer(
     updateTimes,
     [],
     initializeTimes
   );
+  useEffect(() => {
+    // Fetch available times on component mount
+    initializeTimes();
 
-  const submitForm = (formData) => {
+    // Clean up function to cancel any ongoing API requests
+    return () => {
+      // Optional: You can cancel any ongoing API requests or perform any necessary cleanup here.
+    };
+  }, []);
 
-    // Perform actions with the form data, such as making API calls, updating state, etc.
-    console.log("Form submitted:", formData);
-    // Call the API function to submit the form data
+  async function initializeTimes() {
+    const today = new Date();
+    try {
+      const response = await fetchAPI(today);
+      dispatch({ type: "SET_TIMES", payload: response });
+    } catch (error) {
+      console.error("Error fetching available times:", error);
+    }
+  }
+
+  function updateTimes(state, action) {
+    switch (action.type) {
+      case "SET_TIMES":
+        return action.payload;
+      default:
+        return state;
+    }
+  }
+
+  function handleSubmit(formData) {
     submitAPI(formData)
       .then((response) => {
-        if (response === true) {
-          navigate("/confirmed"); // Navigate to the booking confirmation page
-        } else {
-          console.error("Form submission failed.");
+        if (response) {
+          navigate("/confirmed");
         }
       })
       .catch((error) => {
         console.error("Error submitting form:", error);
       });
-  };
-
-  useEffect(() => {
-    initializeTimes();
-  }, []);
+  }
 
   return (
     <main>
@@ -119,7 +161,7 @@ const Main = () => {
         </div>
         <img src={bannerPix} alt="restaurant pix"></img>
       </section>
-      <Routes>
+      {/* <Routes>
         <Route
           path="/booking-page"
           render={() => (
@@ -130,8 +172,8 @@ const Main = () => {
           )}
         />
         <Route path="/confirmed" element={<ConfirmedBooking />} />
-      </Routes>
-      {/* <BookingForm availableTimes={availableTimes} onSubmit={handleSubmit} /> */}
+      </Routes> */}
+      <BookingForm availableTimes={availableTimes} onSubmit={handleSubmit} />
     </main>
   );
 };
